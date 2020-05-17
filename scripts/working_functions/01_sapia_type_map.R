@@ -19,6 +19,7 @@ library(raster)
 # Import raw coords
 #raw_data <- readxl::read_xlsx("./data_raw/species_gps.xlsx")
 raw_data <- readr::read_csv("https://raw.githubusercontent.com/guysutton/sapia_type_maps/master/data_raw/species_gps2.csv")
+head(raw_data)
 
 # Process co-ords 
 #raw_data <- raw_data %>%
@@ -85,9 +86,9 @@ map_sapia <- function(data,
     as.matrix()
   
   # Count the number of GPS points in each raster cell
-  r0 <- rasterize(xy, 
-                  rast, 
-                  fun = "count")
+  r0 <- raster::rasterize(xy, 
+                          rast, 
+                          fun = "count")
   
   #####
   # - Section 2: Filter data for presence/absense map   
@@ -108,6 +109,7 @@ map_sapia <- function(data,
   
   # Replace NA with 0
   data_abun <- datf %>%
+    dplyr::filter(layer > 0) %>%
     tidyr::drop_na(layer)
   
   # Cut abundance vector into abundance categories
@@ -176,11 +178,12 @@ map_sapia <- function(data,
       geom_tile(data = data_abun, aes(x = x,
                                       y = y,
                                       fill = layer)) +
-      scale_fill_manual(values = c("gray75", 
-                                   "gray50", 
-                                   "gray25", 
+      scale_fill_manual(values = c("gray80", 
+                                   "gray60", 
+                                   "gray40", 
                                    "black"),
                         drop = FALSE,
+                        na.translate = F,
                         labels = c("1", "2-5", "6-25", "25+")) +
       labs(x = "Longitude", 
            y = "Latitude",
