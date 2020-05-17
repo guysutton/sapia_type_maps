@@ -10,8 +10,8 @@ This repo contains R code and functions that allows users to produce their own S
 
 ## (1) Users can produce a standard SAPIA-style map, showing the presence/absence per ¼° squares (QDGC). 
 
-![SAPIA-style map](figures/spo_pyr_pres_map.png)
+![SAPIA-style map](figures/spo_pyr_pres_map.png){ width=50% }
 
 ## (2) Alternatively, users can produce an abundance plot, which shows the no. of records per ¼° squares (QDGC).
 
-![SAPIA-style map](figures/spo_pyr_abun_map.png)
+![SAPIA-style map](figures/spo_pyr_abun_map.png){ width=50% }
