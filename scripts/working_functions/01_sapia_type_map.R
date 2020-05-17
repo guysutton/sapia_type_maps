@@ -21,10 +21,10 @@ library(raster)
 raw_data <- readr::read_csv("https://raw.githubusercontent.com/guysutton/sapia_type_maps/master/data_raw/species_gps2.csv")
 
 # Process co-ords 
-raw_data <- raw_data %>%
-  mutate(longitude = as.numeric(longitude),
-         latitude = as.numeric(latitude))
-head(raw_data)
+#raw_data <- raw_data %>%
+#  mutate(longitude = as.numeric(longitude),
+#         latitude = as.numeric(latitude))
+#head(raw_data)
 
 # Set ggplot theme
 theme_set(theme_classic() +
@@ -41,6 +41,7 @@ theme_set(theme_classic() +
 # Define function
 map_sapia <- function(data, 
                       plant_species,
+                      # Default map will be presence/absence
                       plot_abun = FALSE,
                       ...) {
   
