@@ -8,7 +8,7 @@ This repo contains R code and functions that allows users to produce their own S
 
 # Examples
 
-## (1) Users can produce a standard SAPIA-style map, showing the presence/absense per ¼° squares (QDGC). 
+## (1) Users can produce a standard SAPIA-style map, showing the presence/absence per ¼° squares (QDGC). 
 
 ![SAPIA-style map](figures/spo_pyr_pres_map.png)
 
