@@ -6,6 +6,12 @@ The SAPIA database is arguably the most comprehensive database on invasive alien
 
 This repo contains R code and functions that allows users to produce their own SAPIA-style maps. 
 
-For example: 
+# Examples
+
+(1) Users can produce a standard SAPIA-style map, showing the presence/absense per ¼° squares (QDGC). 
+
+![SAPIA-style map](figures/spo_pyr_pres_map.png)
+
+(2) Alternatively, users can produce an abundance plot, which shows the no. of records per ¼° squares (QDGC).
 
 ![SAPIA-style map](figures/spo_pyr_abun_map.png)
