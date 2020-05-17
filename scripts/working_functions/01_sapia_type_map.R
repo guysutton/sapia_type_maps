@@ -2,6 +2,11 @@
 # - Users can choose to plot presence/absense map
 #   or an abundance map. 
 
+# YOU SHOULD BE ABLE TO RUN THIS SCRIPT ON YOUR PC, AS IS. 
+# The example data is shared on my GitHUb repo, so no need to change
+# any file paths. 
+# - NB! - just make sure you have these packages downloaded 
+
 # Load packages
 library(tidyverse)
 library(sf)
@@ -13,7 +18,7 @@ library(raster)
 
 # Import raw coords
 #raw_data <- readxl::read_xlsx("./data_raw/species_gps.xlsx")
-raw_data <- readr::read_csv("https://github.com/guysutton/sapia_type_maps/blob/master/data_raw/species_gps.csv")
+raw_data <- readr::read_csv("https://raw.githubusercontent.com/guysutton/sapia_type_maps/master/data_raw/species_gps2.csv")
 
 # Process co-ords 
 raw_data <- raw_data %>%
@@ -29,14 +34,6 @@ theme_set(theme_classic() +
                   axis.title.y = element_text(margin = unit(c(0, 4, 0, 0), "mm")),
                   legend.position = "none"))
 
-# Import base map
-world <- ne_countries(scale = "medium", 
-                      returnclass = "sf")
-
-# Keep only South Africa 
-world <- world %>%
-  dplyr::filter(name == "South Africa")
-
 #############################################################################
 #############################################################################
 #############################################################################
@@ -46,6 +43,18 @@ map_sapia <- function(data,
                       plant_species,
                       plot_abun = FALSE,
                       ...) {
+  
+  #####
+  # - Section 0: Download base layer for map   
+  ####
+  
+  # Import base map
+  world <- rnaturalearth::ne_countries(scale = "medium",  
+                                       returnclass = "sf")
+  
+  # Keep only South Africa 
+  world <- world %>%
+    dplyr::filter(name == "South Africa")
   
   #####
   # - Section 1: Set up raster cells to derive abundances   
