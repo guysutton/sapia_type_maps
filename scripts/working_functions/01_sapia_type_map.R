@@ -12,7 +12,8 @@ library(ggspatial)
 library(raster)
 
 # Import raw coords
-raw_data <- readxl::read_xlsx("./data_raw/species_gps.xlsx")
+#raw_data <- readxl::read_xlsx("./data_raw/species_gps.xlsx")
+raw_data <- readr::read_csv("https://github.com/guysutton/sapia_type_maps/blob/master/data_raw/species_gps.csv")
 
 # Process co-ords 
 raw_data <- raw_data %>%
