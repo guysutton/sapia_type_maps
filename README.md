@@ -12,4 +12,4 @@ This repo contains R code and functions that allows users to produce their own S
 
 ## (2) Alternatively, users can produce an abundance plot, which shows the no. of records per ¼° squares (QDGC).
 
-<img src="https://github.com/guysutton/sapia_type_maps/blob/master/figures/spo_pyr_abun_map.png" width="700" height="400">
+<img src="https://github.com/guysutton/sapia_type_maps/blob/master/figures/spo_pyr_abun_map.png" align="center" width="700" height="700">
