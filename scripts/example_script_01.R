@@ -2,7 +2,7 @@
 if(!exists("get_clean_obs_function", mode="function")) 
   source("./functions/get_clean_obs_function.R")
 
-devtools::source_url("")
+devtools::source_url("https://raw.githubusercontent.com/guysutton/sapia_type_maps/master/functions/get_clean_obs_function.R")
 
 ##################################################################
 # - Example #1: Plot distribution of Sporobolus pyramidalis in RSA
