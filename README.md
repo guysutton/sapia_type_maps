@@ -10,11 +10,27 @@ This repo contains R code and functions that allows users to produce their own S
 
 ## (1) Users can produce a standard SAPIA-style map, showing the presence/absence per ¼° squares (QDGC). 
 
+```
+map_sapia(data = gps_filter, 
+          # Plot abundance map, LOGICAL
+          plot_abun = FALSE,
+          # Which species should we plot? 
+          plant_species = "Acacia cyclops")
+```
+
 <p align="center"> 
 <img src="https://github.com/guysutton/sapia_type_maps/blob/master/figures/example_script_01_map_acacia_cyclops_pres.png" align="center" width="500" height="400">
 </p>
 
 ## (2) Alternatively, users can produce an abundance plot, which shows the no. of records per ¼° squares (QDGC).
+
+```
+map_sapia(data = gps_filter, 
+          # Plot abundance map, LOGICAL
+          plot_abun = TRUE,
+          # Which species should we plot? 
+          plant_species = "Acacia cyclops")
+```
 
 <p align="center"> 
 <img src="https://github.com/guysutton/sapia_type_maps/blob/master/figures/example_script_01_map_acacia_cyclops.png" align="center" width="500" height="400">
