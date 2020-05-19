@@ -1,5 +1,5 @@
 # Define function to make a SAPIA-style map
-# - Users can choose to plot presence/absense map
+# - Users can choose to plot all records, presence/absence map
 #   or an abundance map. 
 
 # YOU SHOULD BE ABLE TO RUN THIS SCRIPT ON YOUR PC, AS IS. 
@@ -16,34 +16,15 @@ library(rlang)
 library(ggspatial)
 library(raster)
 
-# Import raw coords
-#raw_data <- readxl::read_xlsx("./data_raw/species_gps.xlsx")
-raw_data <- readr::read_csv("https://raw.githubusercontent.com/guysutton/sapia_type_maps/master/data_raw/species_gps2.csv")
-head(raw_data)
-
-# Process co-ords 
-#raw_data <- raw_data %>%
-#  mutate(longitude = as.numeric(longitude),
-#         latitude = as.numeric(latitude))
-#head(raw_data)
-
-# Set ggplot theme
-theme_set(theme_classic() +
-            theme(panel.border = element_rect(colour = "black", fill = NA),
-                  axis.text = element_text(colour = "black"),
-                  axis.title.x = element_text(margin = unit(c(2, 0, 0, 0), "mm")),
-                  axis.title.y = element_text(margin = unit(c(0, 4, 0, 0), "mm")),
-                  legend.position = "none"))
-
 #############################################################################
 #############################################################################
 #############################################################################
 
 # Define function
 map_sapia <- function(data, 
-                      plant_species,
-                      # Default map will be presence/absence
-                      plot_abun = FALSE,
+                      species,
+                      # Default map will be all records
+                      map_type = "all",
                       ...) {
   
   #####
@@ -78,10 +59,27 @@ map_sapia <- function(data,
   
   # Filter which plant species to plot 
   # Must use %in%, not ==
-  data <- filter({{ data }}, plant_species %in% {{ plant_species }})
+  data <- filter({{ data }}, plant_species %in% {{ species }})
+  
+  # ----- Filter only GPS points within South Africa 
+  
+  # Make RSA shapefile into SpatialPolygonDataFrame
+  rsa_sp <- as(world, 'Spatial')
+  
+  # Make GPS points into SpatialPointsDataFrame
+  gps_sp <- SpatialPointsDataFrame(coords = data[, c("longitude", "latitude")], 
+                                   data = data,
+                                   proj4string = CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+  
+  
+  # Filter and keep only points within SpatialPolygon
+  filter_data <- gps_sp[!is.na(over(gps_sp, as(rsa_sp, "SpatialPolygons"))), ]
+  
+  # Make filtered points into a dataframe
+  filter_data <- as.data.frame(filter_data)
   
   # Get xy-cords into a matrix 
-  xy <- data %>%
+  xy <- filter_data %>%
     dplyr::select(longitude, latitude) %>%
     as.matrix()
   
@@ -123,14 +121,61 @@ map_sapia <- function(data,
         breaks = c(0, 1, 2, 5, 25), 
         labels = c("1", "2-5", "6-25", "25+"))
   
+  # Set ggplot theme
+  theme_set(theme_classic() +
+              theme(panel.border = element_rect(colour = "black", fill = NA),
+                    axis.text = element_text(colour = "black"),
+                    axis.title.x = element_text(margin = unit(c(2, 0, 0, 0), "mm")),
+                    axis.title.y = element_text(margin = unit(c(0, 4, 0, 0), "mm")),
+                    legend.position = "none"))
+  
   #####
-  # -  Section 4: Plot presence/absense map
+  # -  Section 5: Plot all records
   #####
   
-  # If users specify plot_abun = FALSE,
+  # If users specify map_type = "all",
   # the following map is returned. 
   
-  if (plot_abun == FALSE) {
+  if (map_type == "all") {
+    
+    # Plot map
+    
+    p <- ggplot(data = world) +
+      scale_fill_viridis_c(na.value = "white") +
+      geom_sf(fill = "NA") +
+      geom_point(data = filter_data, aes(x = longitude, 
+                                         y = latitude)) +
+      labs(x = "Longitude", 
+           y = "Latitude") + 
+      coord_sf(xlim = c(15.5, 33.5), 
+               ylim = c(-35, -21.75), 
+               expand = FALSE) +
+      annotation_scale(location = "br", # 
+                       style = "ticks", 
+                       width_hint = 0.150) +
+      annotation_north_arrow(location = "br", 
+                             which_north = "true", 
+                             pad_x = unit(0.175, "in"), 
+                             pad_y = unit(0.3, "in"),
+                             style = north_arrow_fancy_orienteering) +
+      annotate("text", 
+               x = 16.5, 
+               y = -22.5, 
+               fontface = "italic",
+               size = 5,
+               hjust = 0,
+               label = {{ species }})
+    
+  }
+  
+  #####
+  # -  Section 5: Plot presence/absense map
+  #####
+  
+  # If users specify map_type = "presence",
+  # the following map is returned. 
+  
+  if (map_type == "presence") {
     
     # Plot map
     
@@ -159,18 +204,18 @@ map_sapia <- function(data,
                fontface = "italic",
                size = 5,
                hjust = 0,
-               label = {{ plant_species }})
+               label = {{ species }})
     
   }
   
   #####
-  # -  Section 5: Plot abundance map
+  # -  Section 6: Plot abundance map
   #####
   
-  # If users specify plot_abun = TRUE,
+  # If users specify map_type = "abundance",
   # the following map is returned. 
   
-  if (plot_abun == TRUE) {
+  if (map_type == "abundance") {
     
     # Plot abundance map
     p <- ggplot(data = world) +
@@ -208,7 +253,7 @@ map_sapia <- function(data,
                fontface = "italic",
                size = 5,
                hjust = 0,
-               label = {{ plant_species }})
+               label = {{ species }})
   }
   
   # Print the plot
@@ -219,50 +264,3 @@ map_sapia <- function(data,
 #############################################################################
 #############################################################################
 #############################################################################
-
-# Take the function for a test drive
-
-# Plot abundance map for Eragrostis curvula 
-map_sapia(data = raw_data, 
-          # Plot abundance map, LOGICAL
-          plot_abun = TRUE,
-          # Which species should we plot? 
-          plant_species = "Eragrostis curvula")
-ggsave("./figures/era_curv_abun_map.png",
-       width = 8,
-       height = 6,
-       dpi = 600)
-
-# Plot abundance map for Sporobolus pyramidalis 
-map_sapia(data = raw_data, 
-          # Plot abundance map, LOGICAL
-          plot_abun = TRUE,
-          # Which species should we plot? 
-          plant_species = "Sporobolus pyramidalis")
-ggsave("./figures/spo_pyr_abun_map.png",
-       width = 8,
-       height = 6,
-       dpi = 600)
-
-# Plot presence/absence map for Eragrostis curvula 
-map_sapia(data = raw_data, 
-          # Plot abundance map, LOGICAL
-          plot_abun = FALSE,
-          # Which species should we plot? 
-          plant_species = "Eragrostis curvula")
-ggsave("./figures/era_curv_pres_map.png",
-       width = 8,
-       height = 6,
-       dpi = 600)
-
-# Plot presence/absence map for Sporobolus pyramidalis 
-map_sapia(data = raw_data, 
-          # Plot abundance map, LOGICAL
-          plot_abun = FALSE,
-          # Which species should we plot? 
-          plant_species = "Sporobolus pyramidalis")
-ggsave("./figures/spo_pyr_pres_map.png",
-       width = 8,
-       height = 6,
-       dpi = 600)
-
