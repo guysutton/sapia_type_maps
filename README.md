@@ -6,6 +6,8 @@ The SAPIA database is arguably the most comprehensive database on invasive alien
 
 This repo contains R code and functions that allows users to produce their own SAPIA-style maps. 
 
+* Please note: These maps are made with data from GBIF, and not the SAPIA database itself. 
+
 # Examples
 
 ## (1) Users can produce a standard SAPIA-style map, showing the all known GPS records across South Africa. 
