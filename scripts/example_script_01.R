@@ -75,6 +75,8 @@ devtools::source_url("https://raw.githubusercontent.com/guysutton/sapia_type_map
 map_sapia(data = gps_filter, 
           # Which map do you want?
           map_type = "all",
+          # Which column contains species to plot?
+          col = plant_species,
           # Which species should we plot? 
           species = "Acacia cyclops")
 
@@ -87,6 +89,8 @@ ggsave("./figures/example_script_01_map_acacia_cyclops_all.png",
 map_sapia(data = gps_filter, 
           # Which map do you want?
           map_type = "presence",
+          # Which column contains species to plot?
+          col = plant_species,
           # Which species should we plot? 
           species = "Acacia cyclops")
 
@@ -99,6 +103,8 @@ ggsave("./figures/example_script_01_map_acacia_cyclops_pres.png",
 map_sapia(data = gps_filter, 
           # Which map do you want?
           map_type = "abundance",
+          # Which column contains species to plot?
+          col = plant_species,
           # Which species should we plot? 
           species = "Acacia cyclops")
 

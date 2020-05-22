@@ -25,6 +25,9 @@ map_sapia <- function(data,
                       species,
                       # Default map will be all records
                       map_type = "all",
+                      col,
+                      add_copyright = FALSE,
+                      add_name = TRUE,
                       ...) {
   
   #####
@@ -59,7 +62,7 @@ map_sapia <- function(data,
   
   # Filter which plant species to plot 
   # Must use %in%, not ==
-  data <- filter({{ data }}, plant_species %in% {{ species }})
+  data <- filter({{ data }}, {{ col }} %in% {{ species }})
   
   # ----- Filter only GPS points within South Africa 
   
@@ -246,18 +249,50 @@ map_sapia <- function(data,
                              style = north_arrow_fancy_orienteering) +
       theme(legend.position = c(0.14, 0.775),
             legend.title = element_text(size = 12.5),
-            legend.text = element_text(size = 12.5)) +
+            legend.text = element_text(size = 12.5))
+      
+  }
+  
+  ###
+  # - Add conditional elements
+  ###
+  
+  # 1. Copyright symbol and text 
+  
+  if( add_copyright == TRUE ) {
+    
+    p +
+      annotate("text", 
+               x = 21.5, 
+               y = -34.75, 
+               fontface = "italic",
+               size = 3,
+               hjust = 0,
+               label = "Copyright \u00A9 2020. Centre for Biological Control")
+  } else {
+    
+    p
+    
+  }
+  
+  # 2. Add species name to plot
+  
+  if ( add_name == TRUE ) {
+    
+    p +
       annotate("text", 
                x = 16.5, 
                y = -22.5, 
                fontface = "italic",
                size = 5,
                hjust = 0,
-               label = {{ species }})
+               label = {{ species }}) 
+    
+  } else {
+    
+    p
+    
   }
-  
-  # Print the plot
-  p
   
 }
 
