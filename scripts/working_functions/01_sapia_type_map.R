@@ -52,7 +52,7 @@ map_sapia <- function(data,
                  xmx = 180, 
                  ymx = 90, 
                  resolution = 0.5,
-                 crs = '+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs ')
+                 crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
   
   # Set the resolution of the raster 
   x_res <- 0.25
@@ -121,8 +121,9 @@ map_sapia <- function(data,
   # Cat5 = 25+
   data_abun$layer <- 
     cut(data_abun$layer, 
-        breaks = c(0, 1, 2, 5, 25), 
-        labels = c("1", "2-5", "6-25", "25+"))
+        breaks = c(1, 2, 5, 25, 10000), 
+        labels = c("1", "2-5", "6-25", "25+"),
+        include.lowest = T)
   
   # Set ggplot theme
   theme_set(theme_classic() +
@@ -294,8 +295,7 @@ map_sapia <- function(data,
     
   }
   
+  #suppressWarnings(warning("Scale on map varies by more than 10%, scale bar may be inaccurate"))
+  
 }
 
-#############################################################################
-#############################################################################
-#############################################################################
