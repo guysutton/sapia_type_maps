@@ -1,11 +1,5 @@
-# Define function to make a SAPIA-style map
-# - Users can choose to plot all records, presence/absence map
-#   or an abundance map. 
-
-# YOU SHOULD BE ABLE TO RUN THIS SCRIPT ON YOUR PC, AS IS. 
-# The example data is shared on my GitHUb repo, so no need to change
-# any file paths. 
-# - NB! - just make sure you have these packages downloaded 
+# Define map_sapia function to make a SAPIA-style map
+# - Users can choose to plot all records, presence/absence or an abundance map. 
 
 # Load packages
 library(tidyverse)
@@ -21,11 +15,10 @@ library(raster)
 #############################################################################
 
 # Define function
-map_sapia <- function(data, 
+map_sapia <- function(data = sapia_plant_db, 
                       species,
-                      # Default map will be all records
                       map_type = "all",
-                      col,
+                      col = plant_species,
                       add_copyright = FALSE,
                       add_name = TRUE,
                       ...) {
@@ -42,6 +35,7 @@ map_sapia <- function(data,
   world <- world %>%
     dplyr::filter(name == "South Africa")
   
+  
   #####
   # - Section 1: Set up raster cells to derive abundances   
   ####
@@ -52,7 +46,7 @@ map_sapia <- function(data,
                  xmx = 180, 
                  ymx = 90, 
                  resolution = 0.5,
-                 crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+                 crs = "+proj=longlat +datum=WGS84 +no_defs")
   
   # Set the resolution of the raster 
   x_res <- 0.25
@@ -72,7 +66,7 @@ map_sapia <- function(data,
   # Make GPS points into SpatialPointsDataFrame
   gps_sp <- SpatialPointsDataFrame(coords = data[, c("longitude", "latitude")], 
                                    data = data,
-                                   proj4string = CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+                                   proj4string = CRS("+proj=longlat +datum=WGS84 +no_defs"))
   
   
   # Filter and keep only points within SpatialPolygon
@@ -250,8 +244,15 @@ map_sapia <- function(data,
                              style = north_arrow_fancy_orienteering) +
       theme(legend.position = c(0.14, 0.775),
             legend.title = element_text(size = 12.5),
-            legend.text = element_text(size = 12.5))
-      
+            legend.text = element_text(size = 12.5)) +
+      annotate("text", 
+               x = 16.5, 
+               y = -22.5, 
+               fontface = "italic",
+               size = 5,
+               hjust = 0,
+               label = {{ species }})
+    
   }
   
   ###
@@ -295,7 +296,11 @@ map_sapia <- function(data,
     
   }
   
-  #suppressWarnings(warning("Scale on map varies by more than 10%, scale bar may be inaccurate"))
+  p
   
 }
+
+################################################################################
+################################################################################
+################################################################################
 
