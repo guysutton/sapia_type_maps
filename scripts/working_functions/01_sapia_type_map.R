@@ -68,6 +68,8 @@ map_sapia <- function(data = sapia_plant_db,
                                    data = data,
                                    proj4string = CRS("+proj=longlat +datum=WGS84 +no_defs"))
   
+  # Make them into the same crs 
+  rsa_sp <- spTransform(rsa_sp, crs(gps_sp))
   
   # Filter and keep only points within SpatialPolygon
   filter_data <- gps_sp[!is.na(over(gps_sp, as(rsa_sp, "SpatialPolygons"))), ]
